@@ -1,0 +1,174 @@
+<div id="wpDisclaimer" class="modal-overlay">
+  <div class="modal-card">
+    <h3>Haftungsausschluss</h3>
+    <p>
+      Die Nutzung dieses Werkzeugs, der Anleitungen und der Firmware erfolgt <strong>vollständig auf eigene Gefahr und
+      eigene Verantwortung</strong>. Es wird <strong>keinerlei Haftung</strong> übernommen, insbesondere nicht für Schäden
+      an Fahrzeug, Steuereinheit, Personen oder Dritten sowie für Datenverlust, Garantieverlust, Bußgelder oder sonstige
+      rechtliche Folgen gleich welcher Art. Die Modifikation der Firmware kann die Betriebserlaubnis nach eKFV erlöschen
+      lassen. Ein derart verändertes Fahrzeug darf <strong>nicht im öffentlichen Straßenverkehr</strong> betrieben werden.
+    </p>
+    <label class="modal-check">
+      <input type="checkbox" id="wpAgree" onchange="wpToggleAccept()">
+      <span>Ich habe den Haftungsausschluss gelesen und akzeptiere ihn.</span>
+    </label>
+    <button id="wpAcceptBtn" class="modal-btn" onclick="wpAcceptDisclaimer()" disabled>Akzeptieren &amp; fortfahren</button>
+  </div>
+</div>
+
+<div class="guide-header">
+  <span class="guide-meta">Browser-Tool</span>
+  <h2>Web-Patcher (Beta)</h2>
+  <p class="guide-subtitle">Firmware direkt im Browser erstellen, ohne Installation</p>
+</div>
+
+<div class="guide-block">
+  <p>
+    Wählen Sie Ihre Firmware, konfigurieren Sie die Optionen und laden Sie die fertige Datei herunter. Die gesamte
+    Verarbeitung erfolgt lokal im Browser. Eine Installation ist nicht erforderlich, und es werden keine Daten
+    übertragen. <strong>Alle Daten verbleiben auf Ihrem Gerät.</strong>
+  </p>
+</div>
+
+<div class="guide-category">
+  <h3>Wichtig</h3>
+  <div class="important-note warning">
+    <strong>Dateiname nicht ändern:</strong> Benennen Sie die erstellte Datei nicht um. Die Teverun-App prüft den
+    Dateinamen exakt. Eine Umbenennung kann den Roller beim Aufspielen beschädigen.
+  </div>
+  <div class="important-note">
+    <strong>Kompatibilität:</strong> Prüfen Sie vor dem Aufspielen die <a href="#" class="nav-item"
+      data-source="docs/ivcu-kompatibilitaet.html"
+      style="color:#60a5fa;text-decoration:none;font-weight:500;">Kompatibilitätsübersicht</a>.
+  </div>
+  <div class="important-note">
+    <strong>Zero-Start / Kick-Start:</strong> Diese Funktion lässt sich <strong>nicht per Firmware</strong>
+    freischalten. Sie ist im Motorcontroller verankert und beim Fighter chargenabhängig (erste Charge: nein, ab der
+    dritten Charge ab Werk). Weiterführende Informationen finden Sie in den
+    <a href="#" class="nav-item" data-source="docs/faq.html"
+      style="color:#60a5fa;text-decoration:none;font-weight:500;">FAQ</a>.
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>1. Tool starten</h3>
+  <p class="category-desc">Beim ersten Aufruf werden einmalig Komponenten im Hintergrund geladen. Danach steht das
+    Werkzeug unmittelbar zur Verfügung.</p>
+  <button id="wpInitBtn" onclick="wpInit()"
+    style="background:#60a5fa;color:#0b0f19;border:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+    Patcher laden &amp; starten
+  </button>
+  <p id="wpStatus" style="margin-top:14px;font-size:14px;color:#cbd5e1;line-height:1.6;">
+    Noch nicht gestartet.
+  </p>
+</div>
+
+<div id="wpPanel" class="guide-category" style="display:none;">
+  <h3>2. Firmware &amp; Optionen wählen</h3>
+  <p class="category-desc">Die Firmware wird automatisch bereitgestellt. Sie treffen lediglich die Auswahl.</p>
+
+  <div style="display:flex;flex-direction:column;gap:18px;max-width:560px;">
+
+    <div>
+      <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">Firmware</label>
+      <select id="wpFirmware" onchange="wpOnFirmwareChange()"
+        style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
+        <option value="d5">Teverun D5.4.14 (Geschwindigkeit + Bluetooth-Name)</option>
+        <option value="r519">Teverun R5.4.19 (Geschwindigkeit, neueste Version)</option>
+        <option value="ali">ALI Original (nur aufspielen, ohne Änderung)</option>
+        <option value="auto">Eigene Firmware hochladen – Auto-Unlock (jede Version)</option>
+      </select>
+    </div>
+
+    <div id="wpD5Options" style="display:block;display:flex;flex-direction:column;gap:18px;">
+      <div>
+        <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">
+          Geschwindigkeit freigeben
+        </label>
+        <select id="wpSpeed"
+          style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
+          <option value="20">Unverändert (Werkseinstellung)</option>
+          <option value="25">Freigeben (Feineinstellung anschließend im Display)</option>
+        </select>
+        <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+          „Freigeben" hebt die werkseitige Begrenzung auf. Die exakte Höchstgeschwindigkeit legen Sie anschließend im
+          versteckten Menü Ihres Displays fest.
+        </p>
+      </div>
+
+      <div id="wpBleBlock" style="display:flex;flex-direction:column;gap:18px;">
+      <div>
+        <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">
+          Bluetooth-Name / Länderkennung
+        </label>
+        <select id="wpBle" onchange="wpPreviewBle()"
+          style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
+          <option value="">Unverändert</option>
+          <option value="TDE">TDE (Deutschland, striktes eKFV)</option>
+          <option value="TDEINT">TDEINT (Deutschland International)</option>
+          <option value="T1">T1 (Standard International)</option>
+          <option value="T1IL">T1IL (Israel)</option>
+          <option value="TAT">TAT (Österreich und Alpenraum)</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">
+          Ihre FIN <span style="color:#94a3b8;font-weight:400;">(nur bei Änderung des Namens erforderlich)</span>
+        </label>
+        <input type="text" id="wpFin" placeholder="z. B. TDE1FMA25E0458" oninput="wpPreviewBle()"
+          style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-family:ui-monospace,monospace;font-size:14px;outline:none;">
+        <p style="font-size:13px;color:#94a3b8;margin-top:6px;">Fundort der FIN: <a href="#" class="nav-item"
+            data-source="docs/fin-auslesen.html" style="color:#60a5fa;text-decoration:none;">FIN / VIN auslesen</a>.</p>
+        <p id="wpBlePreview" style="font-size:14px;color:#10b981;margin-top:6px;font-family:ui-monospace,monospace;"></p>
+      </div>
+      </div>
+    </div>
+
+    <div id="wpAliNote" style="display:none;">
+      <div class="important-note">
+        Die ALI-Original-Firmware wird ohne Änderung in eine aufspielbare Datei konvertiert. Optionen für
+        Geschwindigkeit und Name entfallen.
+      </div>
+    </div>
+
+    <div id="wpUploadBlock" style="display:none;">
+      <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">
+        Eigene Firmware-Datei (.hex)
+      </label>
+      <input type="file" id="wpUpload" accept=".hex"
+        style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
+      <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+        Auto-Unlock erkennt die Geschwindigkeits-Begrenzung automatisch und entfernt sie – auch bei neuen oder
+        unbekannten Versionen. Wird kein eindeutiges Muster gefunden, wird <strong>nichts</strong> verändert
+        (Sicherheits-Abbruch). Die Datei bleibt lokal im Browser.
+      </p>
+    </div>
+
+    <div>
+      <button id="wpRunBtn" onclick="wpRun()"
+        style="background:#10b981;color:#0b0f19;border:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+        Datei erstellen
+      </button>
+    </div>
+
+    <div id="wpDownloads" style="display:none;">
+      <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:8px;">Download
+        bereit</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button id="wpDlHex" onclick="wpDownload('hex')"
+          style="background:#1e293b;color:#60a5fa;border:1px solid #334155;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:ui-monospace,monospace;">          HEX</button>
+        <button id="wpDlBin" onclick="wpDownload('bin')"
+          style="background:#1e293b;color:#60a5fa;border:1px solid #334155;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:ui-monospace,monospace;">          BIN</button>
+      </div>
+      <p style="font-size:13px;color:#94a3b8;margin-top:8px;">Für das Update über die Teverun-App benötigen Sie die
+        <strong>HEX</strong>-Datei.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="guide-footer">
+  <p>Anschließend folgt das <a href="#" class="nav-item" data-source="docs/firmware-aufspielen.html"
+      style="color:#60a5fa;text-decoration:none;font-weight:500;">Aufspielen der Firmware</a>.</p>
+</div>

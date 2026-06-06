@@ -1,0 +1,150 @@
+<div class="guide-header">
+    <span class="guide-meta">Kompatibilität</span>
+    <h2>Scooter &amp; IVCU Übersicht</h2>
+    <p class="guide-subtitle">Technische Voraussetzungen, offizielle Versionsmatrix und Hardwareausschlüsse</p>
+</div>
+
+<div class="guide-category"
+    style="background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.25); padding: 18px; border-radius: 8px; margin-bottom: 24px;">
+    <h4
+        style="color: #ef4444; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        WICHTIGER HINWEIS: AUSSCHLIESSLICH FIGHTER MINI eKFV
+    </h4>
+    <p style="font-size: 14px; color: #fca5a5; line-height: 1.6; margin: 0;">
+        Der Patcher unterstützt zum aktuellen Zeitpunkt <strong>ausschließlich den Fighter Mini eKFV</strong>
+        (IVCU-Hardware-Generation V5.X, Box C, Software 5.4.x). <br>
+        Ältere Hardwarestände wie <strong>V3.X (Box A)</strong> oder <strong>V4.X (Box B)</strong> sowie die
+        Spezialplatinen <strong>C1 und C2</strong> werden <strong>nicht unterstützt</strong>. Flashen Sie unter keinen
+        Umständen ein anderes Fahrzeug; dies führt unweigerlich zum Brick der Steuereinheit.
+    </p>
+</div>
+
+<div class="guide-block">
+    <p>
+        Das Flashen einer modifizierten Firmware ist mit Risiken verbunden. Um einen irreparablen Defekt Ihrer
+        Steuereinheit zu vermeiden, gleichen Sie Ihre Hardware vorab zwingend mit den offiziellen Spezifikationen ab.
+    </p>
+</div>
+
+<div class="guide-category">
+    <h3>Offizielle IVCU Versionsmatrix</h3>
+    <p class="category-desc">Übersicht der Software- und Hardwarestände gemäß Herstellerzertifizierung.</p>
+
+    <div class="table-container">
+        <table class="docs-table">
+            <thead>
+                <tr>
+                    <th>IVCU Box</th>
+                    <th>IVCU Hardware</th>
+                    <th>IVCU Software</th>
+                    <th>Kompatible Scooter-Modelle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="opacity: 0.4; background-color: rgba(0,0,0,0.15);">
+                    <td><code>A</code> (Nicht supported)</td>
+                    <td>3.X</td>
+                    <td>2.2.X</td>
+                    <td class="model-list">Alle App-Modelle vor Baujahr 2024</td>
+                </tr>
+                <tr style="opacity: 0.4; background-color: rgba(0,0,0,0.15);">
+                    <td><code>B</code> (Nicht supported)</td>
+                    <td>4.X</td>
+                    <td>2.2.X</td>
+                    <td class="model-list">Alle App-Modelle vor Baujahr 2024</td>
+                </tr>
+                <tr style="background-color: rgba(16, 185, 129, 0.03); border-left: 3px solid #10b981;">
+                    <td><code>C</code> <strong>(AKTIV)</strong></td>
+                    <td><strong>5.X</strong></td>
+                    <td><strong>5.4.x</strong></td>
+                    <td class="model-list" style="color: #f8fafc;"><strong>Fighter Mini eKFV</strong> / Blade GT II /
+                        Fighter 11 / Fighter Supreme+</td>
+                </tr>
+                <tr style="opacity: 0.4; background-color: rgba(0,0,0,0.15);">
+                    <td><code>C1</code> (deaktiviert)</td>
+                    <td>5.X (GPS+PKE)</td>
+                    <td>3.4.X</td>
+                    <td class="model-list">Fighter Supreme Ultra / Fighter Supreme 7260R</td>
+                </tr>
+                <tr style="opacity: 0.4; background-color: rgba(0,0,0,0.15);">
+                    <td><code>C1</code> (deaktiviert)</td>
+                    <td>5.X (GPS+PKE)</td>
+                    <td>3.6.X (R Gear)</td>
+                    <td class="model-list">Tetra (4 Motoren)</td>
+                </tr>
+                <tr style="opacity: 0.4; background-color: rgba(0,0,0,0.15);">
+                    <td><code>C2</code> (deaktiviert)</td>
+                    <td>5.X (GPS+PKE)</td>
+                    <td>4.6.X</td>
+                    <td class="model-list">Tetra (2 Motoren)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="guide-category">
+    <h3>Freigabe für den Patcher</h3>
+    <p class="category-desc">Diese Konfiguration wurde erfolgreich getestet und ist für Modifikationen freigegeben.</p>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <div class="step-num">OK</div>
+            <h4>Teverun Fighter Mini (eKFV-Version), Box C</h4>
+            <p>
+                Die deutsche Ausführung des Fighter Mini ist die einzige freigegebene Zielplattform.
+                <strong>Zwingende Voraussetzung:</strong> Das Fahrzeug muss der <strong>Box C</strong> entsprechen, die
+                IVCU-Hardware muss im Bereich V5.X liegen und die Software auf Basis von <code>5.4.x</code> laufen. Nur
+                auf dieser Revision greifen die Patches fehlerfrei.
+            </p>
+            <p>
+                Erfasst sind alle Fighter-Mini-Varianten (Eco bis Pro), mit und ohne GPS-Modul (schwarze oder gelbe Box)
+                sowie AliExpress- und Original-Boxen.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="guide-category">
+    <h3>Inkompatibel (Gefahrenbereich)</h3>
+    <p class="category-desc">Unter den folgenden Bedingungen darf der Patch- beziehungsweise Flash-Vorgang unter keinen
+        Umständen durchgeführt werden.</p>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <div class="step-num">ERR</div>
+            <h4>Ältere IVCU-Generationen (Box A und B)</h4>
+            <p>
+                Verfügt Ihr Fahrzeug über eine ältere Steuerungsplatine der Hardwareversionen 3.X oder 4.X (Modelle vor
+                2024), weicht das Speicherlayout vollständig ab. Das Aufspielen der neueren Firmware führt zur sofortigen
+                Zerstörung des Bootloaders und damit zum Brick.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">ERR</div>
+            <h4>Weitere Modelle auf Box C</h4>
+            <p>
+                Auf der Box C laufen auch andere Fahrzeuge (Blade GT II, Fighter 11, Fighter Supreme+). Der Patcher ist
+                ausschließlich für den Fighter Mini eKFV ausgelegt und für diese Modelle nicht vorgesehen.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">ERR</div>
+            <h4>Spezialplatinen (Box C1 und C2)</h4>
+            <p>
+                Größere Modelle wie der Fighter Supreme Ultra, der 7260R oder die Tetra-Modelle verwenden erweiterte
+                Hardware (GPS-Module, schlüssellose PKE-Systeme oder Mehrmotorsteuerungen). Deren Softwarestände
+                <code>3.4.X</code>, <code>3.6.X</code> oder <code>4.6.X</code> sind mit dem Patcher
+                <strong>nicht kompatibel</strong>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="guide-footer">
+    <p>Überprüfen Sie Ihre Version in der App unter "Product Information", bevor Sie mit dem <a href="#"
+            class="nav-item" data-source="docs/firmware-aufspielen.html"
+            style="color: #60a5fa; text-decoration: none; font-weight: 500;">Aufspielen der Firmware</a> beginnen.</p>
+</div>

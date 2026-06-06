@@ -1,0 +1,322 @@
+<div class="guide-header">
+    <span class="guide-meta">Hintergrundwissen</span>
+    <h2>Bedeutung der BLE-Länderkennungen und Modellcodes</h2>
+    <p class="guide-subtitle">Technische Aufschlüsselung der Bluetooth-Namenslogik der Teverun-App</p>
+</div>
+
+<div class="guide-block">
+    <p>
+        Beim Ausführen des Auto Patchers steuert die gewählte Länderkennung (das Präfix) im Bluetooth-Namen, welche
+        Regionseinstellungen und App-Menüs geladen werden. Darauf folgt eine spezifische Codestruktur, die der App
+        mitteilt, welches Fahrzeugmodell exakt vorliegt.
+    </p>
+</div>
+
+<div class="important-note warning">
+    <strong>Hinweis zur Verbindlichkeit:</strong> Die nachfolgende Aufschlüsselung beruht auf eigener Analyse und stellt
+    ausschließlich eine Schlussfolgerung dar. Für ihre Richtigkeit und Vollständigkeit wird keine Haftung übernommen.
+</div>
+
+<div class="guide-category"
+    style="background-color: rgba(96, 165, 250, 0.03); border: 1px solid rgba(96, 165, 250, 0.2); padding: 20px; border-radius: 8px; margin-bottom: 32px;">
+    <h3 style="color: #60a5fa;">Live-Analyse des BLE-Namens</h3>
+    <p class="category-desc">Geben Sie den Bluetooth-Namen Ihres Scooters ein, um Region und Modell unmittelbar zu
+        bestimmen.</p>
+
+    <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <input type="text" id="bleCalcInput" placeholder="Z. B. TDE1FMA25E0458 oder T202401FM002"
+            style="width: 100%; max-width: 500px; background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 10px 14px; color: #f8fafc; font-family: ui-monospace, monospace; font-size: 14px; outline: none; transition: border-color 0.2s;"
+            oninput="analyzeBleName()">
+
+        <div id="bleCalcResult"
+            style="display: none; margin-top: 8px; padding: 12px; background-color: #1e293b; border-radius: 6px; border-left: 4px solid #60a5fa;">
+            <div style="font-size: 14px; color: #f8fafc; font-weight: 600; margin-bottom: 4px;">Analyseergebnis:</div>
+            <div style="font-size: 14px; color: #cbd5e1; line-height: 1.6;">
+                Region/Kennung: <span id="resRegion" style="color: #60a5fa; font-weight: 600;">-</span><br>
+                Erkanntes Modell: <span id="resModel" style="color: #f8fafc; font-weight: 600;">-</span><br>
+                Extrahierter Code: <code id="resCode" style="color: #a78bfa;">-</code>
+                <div id="resDecomp" style="margin-top: 8px; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="guide-category">
+    <h3>Aufbau der deutschen Seriennummer (FIN)</h3>
+    <p class="category-desc">Die deutsche FIN ist nicht zufällig aufgebaut: Jedes Feld kodiert eine Eigenschaft des
+        Rollers. Der Auto Patcher liest diese Struktur aus, um Ihr Modell zu erkennen.</p>
+
+    <div
+        style="font-family: ui-monospace, monospace; font-size: 20px; background-color: #0f172a; padding: 18px; border-radius: 8px; letter-spacing: 3px; text-align: center;">
+        <span style="color: #a78bfa; font-weight: bold; border-bottom: 2px solid #a78bfa;">TDE</span><span
+            style="color: #f59e0b; font-weight: bold; border-bottom: 2px solid #f59e0b;">1</span><span
+            style="color: #10b981; font-weight: bold; border-bottom: 2px solid #10b981;">FMA</span><span
+            style="color: #60a5fa; font-weight: bold; border-bottom: 2px solid #60a5fa;">25</span><span
+            style="color: #e2e8f0; font-weight: bold; border-bottom: 2px solid #94a3b8;">E0458</span>
+    </div>
+
+    <div class="table-container">
+        <table class="docs-table">
+            <thead>
+                <tr>
+                    <th>Feld</th>
+                    <th>Beispiel</th>
+                    <th>Bedeutung</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span style="color: #a78bfa; font-weight: 600;">Länderpräfix</span></td>
+                    <td><code>TDE</code></td>
+                    <td>Region beziehungsweise Zulassungsraum (z. B. TDE = Deutschland / eKFV)</td>
+                </tr>
+                <tr>
+                    <td><span style="color: #f59e0b; font-weight: 600;">Generation</span></td>
+                    <td><code>1</code></td>
+                    <td>Versionierung beziehungsweise Generation des Scooters (1 = erste Generation)</td>
+                </tr>
+                <tr>
+                    <td><span style="color: #10b981; font-weight: 600;">Modellcode</span></td>
+                    <td><code>FMA</code></td>
+                    <td>Modell und Variante (<code>FM</code> = Fighter Mini, <code>A</code> = vermutlich
+                        eKFV-Variante)</td>
+                </tr>
+                <tr>
+                    <td><span style="color: #60a5fa; font-weight: 600;">Modelljahr</span></td>
+                    <td><code>25</code></td>
+                    <td>Baujahr (25 = 2025)</td>
+                </tr>
+                <tr>
+                    <td><span style="color: #94a3b8; font-weight: 600;">Zähler / ID</span></td>
+                    <td><code>E0458</code></td>
+                    <td>Vermutlich Teil der eindeutigen Identifikationsnummer: Kennbuchstabe und fortlaufende
+                        Seriennummer des einzelnen Rollers</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="important-note">
+        <strong>Wichtig für den Patcher:</strong> Beim Ändern der Kennung wird <strong>ausschließlich das
+            Länderpräfix</strong> ausgetauscht. Generation, Modell, Baujahr und Zähler bleiben erhalten.
+        Wechseln Sie auf eine internationale Kennung (T2 / T1), platziert der Patcher den Modellcode automatisch an der
+        Position, an der die Teverun-App ihn erwartet, damit das Modell weiterhin korrekt erkannt wird.
+    </div>
+</div>
+
+<div class="guide-category">
+    <h3>1. Die Regionenpräfixe (Länderkennungen)</h3>
+    <p class="category-desc">Steuern die softwareseitigen Sperren, die Geschwindigkeitsstufen und die Sichtbarkeit der
+        Tuning-Menüs.</p>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <div class="step-num">TDE</div>
+            <h4>Deutschland (Standard eKFV)</h4>
+            <p>Kennzeichnet die deutsche Standardausführung. Erzwingt die strikte Einhaltung der eKFV-Vorgaben (feste
+                20 km/h) und blendet Performance-Menüs vollständig aus der App aus.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">INT</div>
+            <h4>TDEINT: Deutschland International (Hybrid)</h4>
+            <p>Signalisiert der App ein deutsches Fahrzeug, hebt jedoch die softwareseitigen Regionssperren auf und
+                schaltet weiterführende Einstellungsmenüs frei.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">T2</div>
+            <h4>Global International (vollständig offen)</h4>
+            <p>Die aktuelle globale Kennung für Teverun-Geräte neuerer Generation. Deaktiviert sämtliche Drosselungen und
+                macht das volle Leistungspotenzial in der App konfigurierbar.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">T1</div>
+            <h4>Standard International (Basis)</h4>
+            <p>Globale Standardkennung für ältere Fahrzeugrevisionen oder gängige Importregionen mit regulären
+                Leistungsprofilen.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">IL</div>
+            <h4>T1IL: Israel</h4>
+            <p>Regionalkennung für den israelischen Markt. Passt die App-Parameter und Geschwindigkeitsgrenzen an die
+                dortigen gesetzlichen Vorgaben für E-Scooter an.</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">TAT</div>
+            <h4>TAT: Österreich und Alpenraum</h4>
+            <p>Regionalkennung für den österreichischen Markt, abgestimmt auf die dortigen Toleranzgrenzen und
+                länderspezifischen Vorgaben (beispielsweise 25 km/h).</p>
+        </div>
+    </div>
+</div>
+
+<div class="guide-category">
+    <h3>2. Interne Modellzuordnung (Suffixe)</h3>
+    <p class="category-desc">Je nach gewählter Kennung liest die App die Modellkennungen aus unterschiedlichen Positionen
+        des Bluetooth-Namens aus.</p>
+
+    <div
+        style="background-color: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #334155;">
+        <h4 style="color: #60a5fa; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Variante A: Namensschema bei
+            globaler <span
+                style="background: rgba(96, 165, 250, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px;">T2</span>
+            Kennung</h4>
+        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 12px;">
+            Beginnt der Bluetooth-Name mit <code>T2</code>, extrahiert das System die Zeichen an <strong>Stelle 7 und
+                8</strong> (nullbasierter Index im App-Code):
+        </p>
+        <div
+            style="font-family: ui-monospace, monospace; font-size: 15px; background-color: #0f172a; padding: 12px; border-radius: 6px; letter-spacing: 2px; color: #94a3b8;">
+            <span style="color: #60a5fa; font-weight: bold; border-bottom: 2px solid #60a5fa;">T2</span>02401<span
+                style="color: #f43f5e; font-weight: bold; border-bottom: 2px solid #f43f5e; background: rgba(244, 63, 94, 0.1);">FM</span>0248
+        </div>
+        <div style="font-size: 13px; color: #cbd5e1; margin-top: 8px; display: flex; gap: 16px;">
+            <span><strong style="color: #60a5fa;">■</strong> Stelle 1 bis 2: offenes Präfix</span>
+            <span><strong style="color: #f43f5e;">■</strong> Stelle 8 bis 9 (Code): <code style="color: #f8fafc;">FM</code>
+                = FIGHTER MINI</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="docs-table">
+            <thead>
+                <tr>
+                    <th>Code (Stelle 8 bis 9)</th>
+                    <th>Erkanntes Scooter-Modell in der App</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>FM</code></td>
+                    <td class="model-list">FIGHTER MINI</td>
+                </tr>
+                <tr>
+                    <td><code>FP</code></td>
+                    <td class="model-list">FIGHTER MINI PRO</td>
+                </tr>
+                <tr>
+                    <td><code>FE</code></td>
+                    <td class="model-list">FIGHTER ELEVEN</td>
+                </tr>
+                <tr>
+                    <td><code>FU</code></td>
+                    <td class="model-list">FIGHTER ELEVEN+</td>
+                </tr>
+                <tr>
+                    <td><code>SU</code></td>
+                    <td class="model-list">SUPREME ULTRA</td>
+                </tr>
+                <tr>
+                    <td><code>SR</code></td>
+                    <td class="model-list">SUPREME 7260</td>
+                </tr>
+                <tr>
+                    <td><code>T4</code></td>
+                    <td class="model-list">TETRA 4 MOTOR</td>
+                </tr>
+                <tr>
+                    <td><code>T2</code></td>
+                    <td class="model-list">TETRA 2 MOTOR</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div
+        style="background-color: #1e293b; padding: 16px; border-radius: 8px; margin-top: 32px; margin-bottom: 20px; border: 1px solid #334155;">
+        <h4 style="color: #60a5fa; font-size: 14px; font-weight: 600; margin-bottom: 8px;">Variante B: Namensschema bei
+            Standardkennungen (<span style="color: #a78bfa;">T1</span>, T1IL, TAT usw.)</h4>
+        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 12px;">
+            Bei allen Präfixen außer <code>T2</code> liest die App ab <strong>Index 6</strong> die folgenden drei Zeichen
+            als Modellcode aus. Der Auto Patcher baut internationale Namen so auf, dass der Modellcode genau an dieser
+            Position liegt (Beispiel: aus <code>TDE1FMA25E0458</code> wird bei der Kennung T1):
+        </p>
+        <div
+            style="font-family: ui-monospace, monospace; font-size: 15px; background-color: #0f172a; padding: 12px; border-radius: 6px; letter-spacing: 2px; color: #94a3b8;">
+            <span style="color: #a78bfa; font-weight: bold; border-bottom: 2px solid #a78bfa;">T1</span>125E<span
+                style="color: #10b981; font-weight: bold; border-bottom: 2px solid #10b981; background: rgba(16, 185, 129, 0.1);">FMA</span>0458
+        </div>
+        <div style="font-size: 13px; color: #cbd5e1; margin-top: 8px; display: flex; gap: 16px; flex-wrap: wrap;">
+            <span><strong style="color: #a78bfa;">■</strong> Index 0 bis 1: Länderpräfix (<code>T1</code>)</span>
+            <span><strong style="color: #94a3b8;">■</strong> Index 2 bis 5: Generation/Jahr/Kennbuchstabe (<code>125E</code>)</span>
+            <span><strong style="color: #10b981;">■</strong> Index 6 bis 8 (Code): <code
+                    style="color: #f8fafc;">FMA</code> (die App prüft den Beginn <code style="color: #10b981;">FM</code>) =
+                FIGHTER MINI</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="docs-table">
+            <thead>
+                <tr>
+                    <th>Codemuster (ab Stelle 7)</th>
+                    <th>Erkanntes Scooter-Modell in der App</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>GTE</code> / <code>GTP</code></td>
+                    <td class="model-list">TEVERUN GT</td>
+                </tr>
+                <tr>
+                    <td><code>T40</code></td>
+                    <td class="model-list">TETRA 4 MOTOR</td>
+                </tr>
+                <tr>
+                    <td><code>T20</code></td>
+                    <td class="model-list">TETRA 2 MOTOR</td>
+                </tr>
+                <tr>
+                    <td><code>FTE</code></td>
+                    <td class="model-list">FIGHTER TEN</td>
+                </tr>
+                <tr>
+                    <td><code>FEE</code> / <code>FEP</code></td>
+                    <td class="model-list">FIGHTER ELEVEN</td>
+                </tr>
+                <tr>
+                    <td><code>SPP</code></td>
+                    <td class="model-list">SUPREME PLUS</td>
+                </tr>
+                <tr>
+                    <td><code>SPU</code></td>
+                    <td class="model-list">SUPREME ULTRA</td>
+                </tr>
+                <tr>
+                    <td><code>SPR</code></td>
+                    <td class="model-list">SUPREME 7260R</td>
+                </tr>
+                <tr>
+                    <td><code>BME</code> / <code>BMP</code> / <code>BMU</code></td>
+                    <td class="model-list">BLADE MINI</td>
+                </tr>
+                <tr>
+                    <td><code>FME</code> / <code>FMO</code> / <code>FMP</code> / <code>FMA</code></td>
+                    <td class="model-list">FIGHTER MINI</td>
+                </tr>
+                <tr>
+                    <td><code>BQE</code> / <code>BQP</code></td>
+                    <td class="model-list">BLADE Q</td>
+                </tr>
+                <tr>
+                    <td><code>FQ</code></td>
+                    <td class="model-list">FIGHTER Q</td>
+                </tr>
+                <tr>
+                    <td><code>SE</code></td>
+                    <td class="model-list">TEVERUN SPACE</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="guide-footer">
+    <p>Wählen Sie Ihre Zielkennung auf Basis dieser Struktur im <a href="#" class="nav-item"
+            data-source="docs/auto-patcher.html"
+            style="color: #60a5fa; text-decoration: none; font-weight: 500;">Teverun Auto Patcher</a>.</p>
+</div>

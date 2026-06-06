@@ -1,0 +1,50 @@
+{
+  "id": "d5_4_14_11",
+  "name": "AWIVCU D5.4.14 Firmware",
+  "base_addr": "0x08007000",
+  "ble_capable": true,
+  "fingerprint": [
+    {"addr": "0x0801D5BE", "value": "0x28"},
+    {"addr": "0x0801D5BF", "value": "0x22"},
+    {"addr": "0x0800C508", "value": "0x02"}
+  ],
+  "params": {
+    "speed": {
+      "type": "int",
+      "min": 20,
+      "max": 70,
+      "supported": [20, 25, 30, 40, 50, 55, 60, 65, 70],
+      "default": 60,
+      "description": "Speed/Zug freigeben (=ALI): ENTFERNT den Output-Clamp (Frame[+A]) in allen 4 Controller-Frame-Buildern per NOP, sodass der natuerliche Wert (~100, wie ALI) gesendet wird -> voller Zug + volle Geschwindigkeit. (Vorher: Clamp auf den --speed-Wert gesetzt = kuenstliche Begrenzung, z.B. 70 -> nur 40-45.) Beliebiger Wert >20 aktiviert; Geschwindigkeit/Zug wird danach per Display-Hidden-Menu (GearLimitSpeed/LimitCurrent) pro Gang geregelt. Wert nur fuer Datei-Label."
+    },
+    "motor_cap": {
+      "type": "bool",
+      "default": false,
+      "description": "Optional: internen Motor-Cap (cmp.w r3,#0x640) auf speed*64 anheben. Fuer ALI-Verhalten NICHT noetig (ALI faehrt 65 mit Stock-0x640). Nur manuell."
+    },
+    "kickstart": {
+      "type": "bool",
+      "default": false,
+      "description": "WIP / DEAKTIVIERT: Zero-Start ist ein ALI-Feature (Setting 0x20000399 in EEPROM-Block 5 @0xB0, das D5 fehlt). Sicherer Patch-Punkt noch nicht final. Aktuell keine Patches -> --kick-start ist No-Op."
+    }
+  },
+  "patches": [
+    {"addr": "0x0800FEEA", "group": "speed", "transform": "fixed", "value": "0xAF", "expected": "0x4F", "note": "Clamp ENTFERNEN Builder1 (0x0800FDCC): MOV.W r8,#X -> NOP.W b0 (Frame[+A]=natural=ALI)"},
+    {"addr": "0x0800FEEB", "group": "speed", "transform": "fixed", "value": "0xF3", "expected": "0xF0", "note": "NOP.W b1"},
+    {"addr": "0x0800FEEC", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "NOP.W b2"},
+    {"addr": "0x0800FEED", "group": "speed", "transform": "fixed", "value": "0x80", "expected": "0x08", "note": "NOP.W b3"},
+    {"addr": "0x0801011A", "group": "speed", "transform": "fixed", "value": "0xAF", "expected": "0x4F", "note": "Clamp ENTFERNEN Builder2 (0x0800FFFC): MOV.W r8,#X -> NOP.W b0"},
+    {"addr": "0x0801011B", "group": "speed", "transform": "fixed", "value": "0xF3", "expected": "0xF0", "note": "NOP.W b1"},
+    {"addr": "0x0801011C", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "NOP.W b2"},
+    {"addr": "0x0801011D", "group": "speed", "transform": "fixed", "value": "0x80", "expected": "0x08", "note": "NOP.W b3"},
+    {"addr": "0x080102B0", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder3 (0x080101A2): MOVS r7,#X -> NOP b0"},
+    {"addr": "0x080102B1", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+    {"addr": "0x080104B6", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder4 (0x08010330): MOVS r7,#X -> NOP b0"},
+    {"addr": "0x080104B7", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+
+    {"addr": "0x0800F0E6", "group": "motor_cap", "transform": "motor_cap_lo", "expected": "0xC8", "note": "motor cap ch1 cmp.w r3,#0x640 HW2-low (imm8)"},
+    {"addr": "0x0800F0EC", "group": "motor_cap", "transform": "motor_cap_lo", "expected": "0xC8", "note": "motor cap ch1 mov.w r3,#0x640 HW2-low (imm8)"},
+    {"addr": "0x0800F118", "group": "motor_cap", "transform": "motor_cap_lo", "expected": "0xC8", "note": "motor cap ch2 cmp.w r3,#0x640 HW2-low (imm8)"},
+    {"addr": "0x0800F11E", "group": "motor_cap", "transform": "motor_cap_lo", "expected": "0xC8", "note": "motor cap ch2 mov.w r3,#0x640 HW2-low (imm8)"}
+  ]
+}

@@ -1,0 +1,104 @@
+<div class="guide-header">
+  <span class="guide-meta">Anleitung</span>
+  <h2>BLE-Namen ändern</h2>
+  <p class="guide-subtitle">Bluetooth-Namen und Länderkennung umstellen</p>
+</div>
+
+<div class="guide-block">
+  <p>
+    Die Änderung des Bluetooth-Namens geht <strong>über ein gewöhnliches Firmware-Update hinaus</strong>. Damit der neue
+    Name zuverlässig erscheint, müssen Sie anschließend sowohl das Smartphone als auch den Roller von der bisherigen
+    Kennung bereinigen. Diese zusätzlichen Schritte unterscheiden sich grundlegend vom normalen Aufspielen. Überspringen
+    Sie keinen davon.
+  </p>
+</div>
+
+<div class="important-note warning">
+  <strong>Warum die zusätzlichen Schritte?</strong> Der bisherige Name ist sowohl im Cache des Smartphones als auch im
+  Bluetooth-Modul des Rollers hinterlegt. Ohne Bereinigung findet die App den Roller nach dem Update nicht mehr oder
+  zeigt weiterhin den alten Namen an.
+</div>
+
+<div class="guide-category">
+  <h3>1. Datei erstellen</h3>
+  <p class="category-desc">Den neuen Namen im Web-Patcher festlegen.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>Web-Patcher öffnen</h4>
+      <p>Öffnen Sie den <a href="#" class="nav-item" data-source="docs/web-patcher.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">Web-Patcher</a>, starten Sie ihn und bestätigen Sie
+        den Haftungsausschluss.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>Name wählen und Datei erstellen</h4>
+      <p>Geben Sie Ihre <a href="#" class="nav-item" data-source="docs/fin-auslesen.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">FIN</a> ein und wählen Sie die gewünschte
+        Länderkennung (Bedeutung: <a href="#" class="nav-item" data-source="docs/kennungen-erklaerung.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">TDE, TDEINT, T2</a>). Erstellen Sie die Datei und
+        laden Sie die HEX-Datei herunter.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>2. Aufspielen</h3>
+  <p class="category-desc">Die Datei regulär auf den Roller übertragen.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>Firmware flashen</h4>
+      <p>Spielen Sie die HEX-Datei nach der regulären Anleitung <a href="#" class="nav-item"
+          data-source="docs/firmware-aufspielen.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">Firmware aufspielen</a> auf und warten Sie die
+        Meldung „Upgrade Done" ab.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>3. System bereinigen</h3>
+  <p class="category-desc">Der entscheidende Teil: die bisherige Kennung aus Smartphone und Roller entfernen.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h4>Roller aus dem Account entfernen</h4>
+      <p>Öffnen Sie in den App-Einstellungen „Scooter Management" und entfernen Sie den Roller vollständig aus Ihrem
+        Account.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <h4>App vollständig deinstallieren</h4>
+      <p>Deinstallieren Sie die Teverun-App vollständig vom Smartphone. Das bloße Leeren des Caches genügt häufig nicht,
+        um die hinterlegten Bluetooth-Kennungen zu entfernen.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">6</div>
+      <h4>Deep Sleep abwarten</h4>
+      <p>Schalten Sie den Roller vollständig aus und warten Sie mindestens 10 Minuten. Das Bluetooth-Modul muss
+        spannungsfrei werden, damit es die bisherige Kennung verwirft.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>4. Neu verbinden</h3>
+  <p class="category-desc">Unter dem neuen Namen erneut koppeln.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">7</div>
+      <h4>Neu koppeln</h4>
+      <p>Installieren Sie die App erneut, schalten Sie den Roller ein und starten Sie die Bluetooth-Suche. Der Roller
+        erscheint nun mit der neuen Kennung, beispielsweise im T2- oder TDEINT-Modus.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-footer">
+  <p>Damit ist der Roller mit der neuen Kennung einsatzbereit.</p>
+</div>

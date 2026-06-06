@@ -1,0 +1,39 @@
+{
+  "id": "r5_4_19",
+  "name": "AWIVCU R5.4.19 Firmware",
+  "base_addr": "0x08007000",
+  "ble_capable": true,
+  "ble": {
+    "hook_addr": "0x0800B87E",
+    "orig_target": "0x0801C45C",
+    "uart_send": "0x08019AFE",
+    "patch_addr": "0x0801DB00",
+    "app_end": "0x0801DAFB"
+  },
+  "fingerprint": [
+    {"addr": "0x0801005C", "value": "0x16"},
+    {"addr": "0x0801005D", "value": "0x27"},
+    {"addr": "0x080105D4", "value": "0x16"},
+    {"addr": "0x0801D5BF", "value": "0xF8"}
+  ],
+  "params": {
+    "speed": {
+      "type": "int",
+      "min": 20,
+      "max": 70,
+      "supported": [20, 25, 30, 40, 50, 55, 60, 65, 70],
+      "default": 60,
+      "description": "Speed/Zug freigeben (=Clamp entfernen): NOPt den 22-Clamp (movs r7,#0x16) in allen 4 Controller-Frame-Buildern, sodass der natuerliche Output (Frame[+0xA]) gesendet wird -> voller Speed/Zug. Wert nur fuer Datei-Label; Feintuning per Display-Hidden-Menu (StartLevel/GearLimitSpeed/LimitCurrent)."
+    }
+  },
+  "patches": [
+    {"addr": "0x0801005C", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder1 (movs r7,#0x16 -> NOP) b0"},
+    {"addr": "0x0801005D", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+    {"addr": "0x0801020C", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder2 b0"},
+    {"addr": "0x0801020D", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+    {"addr": "0x080103B4", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder3 b0"},
+    {"addr": "0x080103B5", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+    {"addr": "0x080105D4", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder4 b0"},
+    {"addr": "0x080105D5", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"}
+  ]
+}

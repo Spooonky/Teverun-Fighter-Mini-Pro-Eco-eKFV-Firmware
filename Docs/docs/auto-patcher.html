@@ -1,0 +1,99 @@
+<div class="guide-header">
+  <span class="guide-meta">Programm für den PC</span>
+  <h2>Auto Patcher (Offline-Tool)</h2>
+  <p class="guide-subtitle">Die Variante zum Herunterladen mit Menüführung</p>
+</div>
+
+<div class="guide-block">
+  <p>
+    Am komfortabelsten erfolgt die Bearbeitung über den <a href="#" class="nav-item" data-source="docs/web-patcher.html"
+      style="color:#60a5fa;text-decoration:none;font-weight:500;">Web-Patcher</a> direkt im Browser, ohne Installation.
+    Wer das Werkzeug stattdessen offline auf dem PC nutzen möchte, findet hier die erforderlichen Schritte. Beide Wege
+    erzeugen identische Dateien.
+  </p>
+</div>
+
+<div class="guide-category">
+  <h3>1. Vorbereiten</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>Laufzeitumgebung einrichten</h4>
+      <p>Installieren Sie <a href="https://www.python.org/downloads/" target="_blank"
+          style="color:#60a5fa;text-decoration:underline;">Python</a> und setzen Sie im Installer den Haken bei
+        <strong>„Add Python to PATH"</strong>. Weitere Voraussetzungen bestehen nicht.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>FIN bereithalten</h4>
+      <p>Für die Namensänderung benötigen Sie Ihre FIN. Den Fundort beschreibt <a href="#" class="nav-item"
+          data-source="docs/fin-auslesen.html" style="color:#60a5fa;text-decoration:none;">FIN / VIN auslesen</a>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>2. Tool starten</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>Befehl im Verzeichnis des Tools ausführen</h4>
+      <div class="code-container">
+        <div class="code-block" id="cliCommand">python -m teverun_patcher.cli</div>
+        <button class="copy-btn" onclick="copyCommand()">Kopieren</button>
+      </div>
+      <p style="margin-top:8px;">Anschließend führt Sie eine menügesteuerte Eingabe durch sämtliche Optionen.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>3. Menüführung</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h4>Firmware wählen</h4>
+      <p>Wählen Sie die zu modifizierende Firmware zur Anpassung oder die ALI-Original-Firmware zum reinen Aufspielen.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <h4>Optionen konfigurieren</h4>
+      <p>Im Hauptmenü stehen folgende Optionen zur Auswahl:</p>
+      <ul>
+        <li><strong style="color:#f8fafc;">Geschwindigkeit freigeben</strong>: hebt die werkseitige Begrenzung auf
+          (Feineinstellung anschließend im Display).</li>
+        <li><strong style="color:#f8fafc;">Bluetooth-Name ändern</strong>: FIN eingeben und die gewünschte
+          Länderkennung wählen. Bedeutung der Kennungen: <a href="#" class="nav-item"
+            data-source="docs/kennungen-erklaerung.html" style="color:#60a5fa;text-decoration:none;">Übersicht</a>.</li>
+      </ul>
+      <p style="margin-top:8px;font-size:14px;color:#94a3b8;">Die zuletzt getroffene Auswahl wird gespeichert und beim
+        nächsten Start erneut vorgeschlagen.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">6</div>
+      <h4>Datei erstellen</h4>
+      <p>Mit <code>b</code> rufen Sie eine Übersicht auf und bestätigen die Auswahl. Anschließend liegen die fertigen
+        Dateien im Verzeichnis <code>builds</code>. Für das Update über die App benötigen Sie die
+        <strong>HEX</strong>-Datei.</p>
+
+      <div class="important-note warning">
+        <strong>Dateiname nicht ändern:</strong> Benennen Sie die Datei nicht um. Die App prüft den Dateinamen exakt.
+        Eine Umbenennung kann den Roller beim Aufspielen beschädigen.
+      </div>
+      <div class="important-note critical">
+        <strong>Kompatibilität:</strong> Prüfen Sie vor dem Aufspielen die <a href="#" class="nav-item"
+          data-source="docs/ivcu-kompatibilitaet.html"
+          style="color:#ef4444;text-decoration:underline;font-weight:500;">Kompatibilitätsübersicht</a>.
+      </div>
+      <div class="important-note critical">
+        <strong>Rechtlicher Hinweis:</strong> Ohne Geschwindigkeitsbegrenzung erlischt die Betriebserlaubnis. Zulässig
+        ist die Nutzung ausschließlich auf privatem Gelände.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="guide-footer">
+  <p>Weiter mit dem <a href="#" class="nav-item" data-source="docs/firmware-aufspielen.html"
+      style="color:#60a5fa;text-decoration:none;font-weight:500;">Aufspielen der Firmware</a>.</p>
+</div>

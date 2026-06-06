@@ -1,0 +1,76 @@
+<div class="guide-header">
+  <span class="guide-meta">Anleitung</span>
+  <h2>Firmware aufspielen</h2>
+  <p class="guide-subtitle">Eine fertige Datei über die Teverun-App auf den Roller übertragen</p>
+</div>
+
+<div class="guide-block">
+  <p>
+    So übertragen Sie eine fertige HEX-Datei auf Ihren Roller, unabhängig davon, ob Sie die Geschwindigkeit freigegeben
+    oder eine andere Änderung vorgenommen haben. <strong>Für die Änderung des Bluetooth-Namens sind anschließend
+    zusätzliche Schritte erforderlich</strong>; diese sind in der eigenen Anleitung <a href="#" class="nav-item"
+      data-source="docs/ivcu-ble-rename.html" style="color:#60a5fa;text-decoration:none;font-weight:500;">BLE-Namen
+      ändern</a> beschrieben.
+  </p>
+</div>
+
+<div class="important-note critical">
+  <strong>Gefahr eines Bricks:</strong> Der Vorgang darf nicht unterbrochen werden. Lassen Sie das Display
+  eingeschaltet, die App geöffnet und schalten Sie den Roller nicht aus. Ein Abbruch kann die Steuereinheit dauerhaft
+  zerstören.
+</div>
+
+<div class="guide-category">
+  <h3>1. Vorbereiten</h3>
+  <p class="category-desc">Prüfen Sie vorab die Voraussetzungen.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>App installieren</h4>
+      <p>Laden Sie die offizielle Teverun-App aus dem App-Store, installieren Sie sie und melden Sie sich an.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>Roller verbinden</h4>
+      <p>Schalten Sie den Roller ein, wählen Sie in der App das Bluetooth-Symbol, selektieren Sie Ihr Fahrzeug und warten
+        Sie eine stabile Verbindung ab.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>Kompatibilität bestätigen</h4>
+      <p>Öffnen Sie in der App „Product Information". Die IVCU-Hardware muss <strong>V5.X (Box C)</strong> sein. Bei
+        Abweichung brechen Sie sofort ab. Siehe <a href="#" class="nav-item" data-source="docs/ivcu-kompatibilitaet.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">Kompatibilitätsübersicht</a>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-category">
+  <h3>2. Aufspielen</h3>
+  <p class="category-desc">Unterbrechen Sie die Verbindung während des Vorgangs nicht.</p>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h4>Update starten</h4>
+      <p>Wählen Sie in der App „System Upgrades", selektieren Sie die erstellte HEX-Datei und wählen Sie „Start". Der
+        Vorgang kann bis zu 13 Minuten dauern.</p>
+      <div class="important-note warning">
+        <strong>Dateiname nicht ändern:</strong> Benennen Sie die Datei nicht um. Die App prüft den Dateinamen exakt.
+        Eine Umbenennung kann den Roller beim Aufspielen beschädigen.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <h4>Abschluss abwarten</h4>
+      <p>Warten Sie, bis die App „Upgrade Done" anzeigt. Erst dann ist die Firmware vollständig geschrieben.</p>
+    </div>
+  </div>
+</div>
+
+<div class="guide-footer">
+  <p>Haben Sie den Bluetooth-Namen geändert? Dann folgen die zusätzlichen Schritte unter <a href="#" class="nav-item"
+      data-source="docs/ivcu-ble-rename.html" style="color:#60a5fa;text-decoration:none;font-weight:500;">BLE-Namen
+      ändern</a>.</p>
+</div>
