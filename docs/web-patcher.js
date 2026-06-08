@@ -22,7 +22,7 @@ const WP_PROFILE_FILES = [
 ];
 
 const WP_FIRMWARES = {
-  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true },
+  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true,  blinkerFix: true },
   d5:   { path: "firmwares/AWIVCU_APP_D5_4_14_11.hex", base: "AWIVCU_APP_D5_4_14_11", kind: "d5",  ble: true },
   ali:  { path: "firmwares/ALIVCU_APP_D3.4.12.bin",    base: "ALIVCU_APP_D3.4.12",    kind: "ali", ble: false },
   auto: { path: null, base: null, kind: "auto", ble: false },
@@ -143,6 +143,8 @@ function wpOnFirmwareChange() {
   if (up) up.style.display = (fw.kind === "auto") ? "block" : "none";
   const bleBlock = wpEl("wpBleBlock");
   if (bleBlock) bleBlock.style.display = (isPatch && fw.ble) ? "block" : "none";
+  const blinkerBlock = wpEl("wpBlinkerBlock");
+  if (blinkerBlock) blinkerBlock.style.display = (isPatch && fw.blinkerFix) ? "block" : "none";
 }
 
 function wpPreviewBle() {
@@ -163,11 +165,12 @@ function wpTimestamp() {
   return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
 }
 
-function wpBuildName(fw, speed, variant) {
+function wpBuildName(fw, speed, variant, blinkerFix) {
   if (fw.kind === "ali") return fw.base;
   const parts = [fw.base];
   if (speed > 20) parts.push("Unlocked");
   if (variant) parts.push(`BLE${variant}`);
+  if (blinkerFix) parts.push("BlinkerFix");
   if (parts.length === 1) parts.push("UNPATCHED");
   return parts.join("_") + "_" + wpTimestamp();
 }
@@ -184,9 +187,13 @@ async function wpRun() {
     const pyodide = wpState.pyodide;
     const wp = pyodide.pyimport("teverun_patcher.webpatch");
 
-    let speed = 20, variant = "", serial = "";
+    let speed = 20, variant = "", serial = "", blinkerFix = false;
     if (fw.kind === "d5") {
       speed = parseInt(wpEl("wpSpeed").value || "20", 10);
+      if (fw.blinkerFix) {
+        const cb = wpEl("wpBlinkerFix");
+        blinkerFix = !!(cb && cb.checked);
+      }
       if (fw.ble) {
         variant = wpEl("wpBle").value || "";
         serial = (wpEl("wpFin").value || "").trim().toUpperCase();
@@ -221,7 +228,7 @@ async function wpRun() {
         resProxy = wp.passthrough();
       } else {
         pyodide.FS.writeFile("/work/in.hex", fwBytes);
-        resProxy = wp.patch_d5(speed, variant || null, serial || null);
+        resProxy = wp.patch_d5(speed, variant || null, serial || null, blinkerFix);
       }
     }
 
@@ -232,12 +239,13 @@ async function wpRun() {
     const applied = resProxy.get("applied");
     const targetName = resProxy.get("target_name");
     const detected = (fw.kind === "d5") ? resProxy.get("profile") : null;
+    const blinkerApplied = (fw.kind === "d5") ? resProxy.get("blinker_fix") : false;
     binProxy.destroy();
     resProxy.destroy();
 
     const base = (fw.kind === "auto")
       ? (autoName + "_Unlocked_AUTO_" + wpTimestamp())
-      : wpBuildName(fw, speed, variant);
+      : wpBuildName(fw, speed, variant, blinkerFix);
     wpState.results = {
       hexText,
       binBytes,
@@ -254,6 +262,7 @@ async function wpRun() {
     if (detected) summary += ` · erkannt: <code>${detected}</code>`;
     if (fw.kind === "d5") summary += ` · ${applied} Patches angewendet`;
     if (fw.kind === "auto") summary += ` · ${applied} Clamps automatisch entfernt`;
+    if (blinkerApplied) summary += ` · Blinker-Fix aktiv`;
     if (targetName) summary += ` · neuer BLE-Name <code>${targetName}</code>`;
     wpStatus(summary + ".", "ok");
   } catch (e) {

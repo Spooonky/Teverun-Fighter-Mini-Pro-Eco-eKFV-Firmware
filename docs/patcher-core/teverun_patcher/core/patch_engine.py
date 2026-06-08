@@ -71,6 +71,10 @@ def apply(loader: HexLoader, profile: dict, params: dict) -> PatchReport:
             active = motor_cap
         elif group == "kickstart":
             active = bool(params.get("kickstart", False))
+        elif group == "blinker_fix":
+            # Blinker-Fix (nur 5.4.19): entfernt den zusaetzlichen PB5_RESET im
+            # Blink-Zweig (@0x08019610), der das Blinken zerstoert. Standard AUS.
+            active = bool(params.get("blinker_fix", False))
         else:
             active = True
 

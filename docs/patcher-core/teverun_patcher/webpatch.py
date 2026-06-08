@@ -30,7 +30,7 @@ def _read_bytes(path: str) -> bytes:
         return f.read()
 
 
-def patch_d5(speed, ble_variant=None, ble_serial=None) -> dict:
+def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False) -> dict:
     """Patcht die Firmware (zuvor von JS nach IN_HEX geschrieben).
 
     Das Profil wird per Fingerprint AUTOMATISCH erkannt (5.4.14, 5.4.19, ...),
@@ -40,13 +40,19 @@ def patch_d5(speed, ble_variant=None, ble_serial=None) -> dict:
     speed:        int > 20 aktiviert die Speed/Zug-Freigabe (Clamp-Entfernung).
     ble_variant:  None oder Laender-Kennung (nur fuer ble_capable-Profile / 5.4.14).
     ble_serial:   Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
+    blinker_fix:  True aktiviert den Blinker-Fix (nur 5.4.19; sonst No-Op).
     """
     loader = HexLoader(IN_HEX)
     profile = identify(loader)
     if profile is None:
         raise RuntimeError("Firmware nicht erkannt — kein passendes Profil.")
 
-    params = {"speed": int(speed), "motor_cap": False, "kickstart": False}
+    has_blinker = any(p.get("group") == "blinker_fix" for p in profile.get("patches", []))
+    if blinker_fix and not has_blinker:
+        raise RuntimeError("Blinker-Fix ist nur fuer die R5.4.19-Firmware verfuegbar.")
+
+    params = {"speed": int(speed), "motor_cap": False, "kickstart": False,
+              "blinker_fix": bool(blinker_fix)}
     report = patch_engine.apply(loader, profile, params)
     if not report.ok:
         errs = "; ".join(f"0x{a:08X}: {m}" for a, m in report.errors)
@@ -70,6 +76,7 @@ def patch_d5(speed, ble_variant=None, ble_serial=None) -> dict:
         "skipped": len(report.skipped),
         "target_name": target_name,
         "profile": profile.get("name", "?"),
+        "blinker_fix": bool(blinker_fix) and has_blinker,
     }
 
 

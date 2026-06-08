@@ -24,6 +24,11 @@
       "supported": [20, 25, 30, 40, 50, 55, 60, 65, 70],
       "default": 60,
       "description": "Speed/Zug freigeben (=Clamp entfernen): NOPt den 22-Clamp (movs r7,#0x16) in allen 4 Controller-Frame-Buildern, sodass der natuerliche Output (Frame[+0xA]) gesendet wird -> voller Speed/Zug. Wert nur fuer Datei-Label; Feintuning per Display-Hidden-Menu (StartLevel/GearLimitSpeed/LimitCurrent)."
+    },
+    "blinker_fix": {
+      "type": "bool",
+      "default": false,
+      "description": "Blinker-Fix: In 5.4.19 leuchten die Blinker dauerhaft statt zu blinken. Ein zusaetzlicher PB5_RESET im Blink-Zweig (@0x08019610) ueberschreibt den Toggle. NOPt diese 4 Bytes -> Blinken wie in 5.4.14 wiederhergestellt."
     }
   },
   "patches": [
@@ -34,6 +39,10 @@
     {"addr": "0x080103B4", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder3 b0"},
     {"addr": "0x080103B5", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
     {"addr": "0x080105D4", "group": "speed", "transform": "fixed", "value": "0x00", "expected": "0x16", "note": "Clamp ENTFERNEN Builder4 b0"},
-    {"addr": "0x080105D5", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"}
+    {"addr": "0x080105D5", "group": "speed", "transform": "fixed", "value": "0xBF", "expected": "0x27", "note": "NOP b1"},
+    {"addr": "0x08019610", "group": "blinker_fix", "transform": "fixed", "value": "0x00", "expected": "0xFF", "note": "Blinker-Fix: bl PB5_RESET -> NOP b0"},
+    {"addr": "0x08019611", "group": "blinker_fix", "transform": "fixed", "value": "0xBF", "expected": "0xF7", "note": "NOP b1"},
+    {"addr": "0x08019612", "group": "blinker_fix", "transform": "fixed", "value": "0x00", "expected": "0x90", "note": "NOP b2"},
+    {"addr": "0x08019613", "group": "blinker_fix", "transform": "fixed", "value": "0xBF", "expected": "0xFF", "note": "NOP b3"}
   ]
 }
