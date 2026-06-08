@@ -145,9 +145,18 @@ function wpOnFirmwareChange() {
   if (bleBlock) bleBlock.style.display = (isPatch && fw.ble) ? "block" : "none";
   const blinkerBlock = wpEl("wpBlinkerBlock");
   if (blinkerBlock) blinkerBlock.style.display = (isPatch && fw.blinkerFix) ? "block" : "none";
+  wpUpdateFinVisibility();
+}
+
+// FIN-Eingabe nur zeigen, wenn eine Länderkennung gewählt ist (Name wird geändert).
+function wpUpdateFinVisibility() {
+  const sel = wpEl("wpBle");
+  const finBlock = wpEl("wpFinBlock");
+  if (finBlock) finBlock.style.display = (sel && sel.value) ? "block" : "none";
 }
 
 function wpPreviewBle() {
+  wpUpdateFinVisibility();
   if (!wpState.ready) return;
   const variant = wpEl("wpBle").value;
   const serial = (wpEl("wpFin").value || "").trim().toUpperCase();
