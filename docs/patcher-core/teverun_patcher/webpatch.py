@@ -30,7 +30,7 @@ def _read_bytes(path: str) -> bytes:
         return f.read()
 
 
-def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, settings_persist=False, cruise_persist=False) -> dict:
+def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, cruise_persist=False) -> dict:
     """Patcht die Firmware (zuvor von JS nach IN_HEX geschrieben).
 
     Das Profil wird per Fingerprint AUTOMATISCH erkannt (5.4.14, 5.4.19, ...),
@@ -41,10 +41,8 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, settin
     ble_variant:     None oder Laender-Kennung (nur fuer ble_capable-Profile / 5.4.14).
     ble_serial:      Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
     blinker_fix:     True aktiviert den Blinker-Fix (nur 5.4.19; sonst No-Op).
-    settings_persist:True rüstet die EEPROM-Settings-Speicherung nach (nur 5.4.19).
     cruise_persist:  True rüstet die CruiseMode-Speicherung nach (nur 5.4.19).
     """
-    from teverun_patcher.core import settings_persist as sp_mod
     from teverun_patcher.core import cruise_persist as cp_mod
     loader = HexLoader(IN_HEX)
     profile = identify(loader)
@@ -54,8 +52,6 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, settin
     has_blinker = any(p.get("group") == "blinker_fix" for p in profile.get("patches", []))
     if blinker_fix and not has_blinker:
         raise RuntimeError("Blinker-Fix ist nur fuer die R5.4.19-Firmware verfuegbar.")
-    if settings_persist and not sp_mod.is_compatible(loader):
-        raise RuntimeError("Settings-Speicherung ist nur fuer die R5.4.19-Firmware verfuegbar.")
     if cruise_persist and not cp_mod.is_compatible(loader):
         raise RuntimeError("CruiseMode-Speicherung ist nur fuer die R5.4.19-Firmware verfuegbar.")
 
@@ -73,11 +69,6 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, settin
         info = ble_name_patch.apply(loader, ble_variant, ble_serial, cfg=profile.get("ble"))
         target_name = info["target_name"]
 
-    persist_done = False
-    if settings_persist:
-        sp_mod.apply(loader)   # Cave + 3 Hooks (in-place)
-        persist_done = True
-
     cruise_done = False
     if cruise_persist:
         cp_mod.apply(loader)
@@ -93,7 +84,6 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, settin
         "applied": len(report.applied),
         "skipped": len(report.skipped),
         "target_name": target_name,
-        "settings_persist": persist_done,
         "cruise_persist": cruise_done,
         "profile": profile.get("name", "?"),
         "blinker_fix": bool(blinker_fix) and has_blinker,

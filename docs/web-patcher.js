@@ -11,7 +11,6 @@ const WP_PY_FILES = [
   "teverun_patcher/core/fingerprint.py",
   "teverun_patcher/core/auto_unlock.py",
   "teverun_patcher/core/ble_name_patch.py",
-  "teverun_patcher/core/settings_persist.py",
   "teverun_patcher/core/cruise_persist.py",
   "teverun_patcher/core/bin_to_hex.py",
   "teverun_patcher/webpatch.py",
@@ -24,7 +23,7 @@ const WP_PROFILE_FILES = [
 ];
 
 const WP_FIRMWARES = {
-  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true,  blinkerFix: true, settingsPersist: true, cruisePersist: true },
+  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true,  blinkerFix: true, cruisePersist: true },
   d5:   { path: "firmwares/AWIVCU_APP_D5_4_14_11.hex", base: "AWIVCU_APP_D5_4_14_11", kind: "d5",  ble: true },
   ali:  { path: "firmwares/ALIVCU_APP_D3.4.12.bin",    base: "ALIVCU_APP_D3.4.12",    kind: "ali", ble: false },
   auto: { path: null, base: null, kind: "auto", ble: false },
@@ -147,8 +146,6 @@ function wpOnFirmwareChange() {
   if (bleBlock) bleBlock.style.display = (isPatch && fw.ble) ? "block" : "none";
   const blinkerBlock = wpEl("wpBlinkerBlock");
   if (blinkerBlock) blinkerBlock.style.display = (isPatch && fw.blinkerFix) ? "block" : "none";
-  const persistBlock = wpEl("wpPersistBlock");
-  if (persistBlock) persistBlock.style.display = (isPatch && fw.settingsPersist) ? "block" : "none";
   const cruiseBlock = wpEl("wpCruiseBlock");
   if (cruiseBlock) cruiseBlock.style.display = (isPatch && fw.cruisePersist) ? "block" : "none";
   wpUpdateFinVisibility();
@@ -180,13 +177,12 @@ function wpTimestamp() {
   return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
 }
 
-function wpBuildName(fw, speed, variant, blinkerFix, settingsPersist, cruisePersist) {
+function wpBuildName(fw, speed, variant, blinkerFix, cruisePersist) {
   if (fw.kind === "ali") return fw.base;
   const parts = [fw.base];
   if (speed > 20) parts.push("Unlocked");
   if (variant) parts.push(`BLE${variant}`);
   if (blinkerFix) parts.push("BlinkerFix");
-  if (settingsPersist) parts.push("Persist");
   if (cruisePersist) parts.push("Cruise");
   if (parts.length === 1) parts.push("UNPATCHED");
   return parts.join("_") + "_" + wpTimestamp();
@@ -204,16 +200,12 @@ async function wpRun() {
     const pyodide = wpState.pyodide;
     const wp = pyodide.pyimport("teverun_patcher.webpatch");
 
-    let speed = 20, variant = "", serial = "", blinkerFix = false, settingsPersist = false, cruisePersist = false;
+    let speed = 20, variant = "", serial = "", blinkerFix = false, cruisePersist = false;
     if (fw.kind === "d5") {
       speed = parseInt(wpEl("wpSpeed").value || "20", 10);
       if (fw.blinkerFix) {
         const cb = wpEl("wpBlinkerFix");
         blinkerFix = !!(cb && cb.checked);
-      }
-      if (fw.settingsPersist) {
-        const cb = wpEl("wpPersist");
-        settingsPersist = !!(cb && cb.checked);
       }
       if (fw.cruisePersist) {
         const cb = wpEl("wpCruise");
@@ -253,7 +245,7 @@ async function wpRun() {
         resProxy = wp.passthrough();
       } else {
         pyodide.FS.writeFile("/work/in.hex", fwBytes);
-        resProxy = wp.patch_d5(speed, variant || null, serial || null, blinkerFix, settingsPersist, cruisePersist);
+        resProxy = wp.patch_d5(speed, variant || null, serial || null, blinkerFix, cruisePersist);
       }
     }
 
@@ -265,14 +257,13 @@ async function wpRun() {
     const targetName = resProxy.get("target_name");
     const detected = (fw.kind === "d5") ? resProxy.get("profile") : null;
     const blinkerApplied = (fw.kind === "d5") ? resProxy.get("blinker_fix") : false;
-    const persistApplied = (fw.kind === "d5") ? resProxy.get("settings_persist") : false;
     const cruiseApplied = (fw.kind === "d5") ? resProxy.get("cruise_persist") : false;
     binProxy.destroy();
     resProxy.destroy();
 
     const base = (fw.kind === "auto")
       ? (autoName + "_Unlocked_AUTO_" + wpTimestamp())
-      : wpBuildName(fw, speed, variant, blinkerFix, settingsPersist, cruisePersist);
+      : wpBuildName(fw, speed, variant, blinkerFix, cruisePersist);
     wpState.results = {
       hexText,
       binBytes,
@@ -290,7 +281,6 @@ async function wpRun() {
     if (fw.kind === "d5") summary += ` · ${applied} Patches angewendet`;
     if (fw.kind === "auto") summary += ` · ${applied} Clamps automatisch entfernt`;
     if (blinkerApplied) summary += ` · Blinker-Fix aktiv`;
-    if (persistApplied) summary += ` · Settings-Speicherung aktiv`;
     if (cruiseApplied) summary += ` · CruiseMode-Speicherung aktiv`;
     if (targetName) summary += ` · neuer BLE-Name <code>${targetName}</code>`;
     wpStatus(summary + ".", "ok");
