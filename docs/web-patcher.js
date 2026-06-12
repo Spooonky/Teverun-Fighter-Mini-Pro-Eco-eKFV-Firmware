@@ -12,6 +12,7 @@ const WP_PY_FILES = [
   "teverun_patcher/core/auto_unlock.py",
   "teverun_patcher/core/ble_name_patch.py",
   "teverun_patcher/core/r5_4_19_features.py",
+  "teverun_patcher/core/wheel_diameter.py",
   "teverun_patcher/core/bin_to_hex.py",
   "teverun_patcher/webpatch.py",
 ];
@@ -23,7 +24,7 @@ const WP_PROFILE_FILES = [
 ];
 
 const WP_FIRMWARES = {
-  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true,  blinkerFix: true, zerostart: true, cruise: true },
+  r519: { path: "firmwares/AWIVCU_APP_R5_4_19.hex",   base: "AWIVCU_APP_R5_4_19",   kind: "d5",  ble: true,  blinkerFix: true, zerostart: true, cruise: true, wheelDiameter: true },
   d5:   { path: "firmwares/AWIVCU_APP_D5_4_14_11.hex", base: "AWIVCU_APP_D5_4_14_11", kind: "d5",  ble: true },
   ali:  { path: "firmwares/ALIVCU_APP_D3.4.12.bin",    base: "ALIVCU_APP_D3.4.12",    kind: "ali", ble: false },
   auto: { path: null, base: null, kind: "auto", ble: false },
@@ -151,6 +152,8 @@ function wpOnFirmwareChange() {
   if (zerostartBlock) zerostartBlock.style.display = (isPatch && fw.zerostart) ? "block" : "none";
   const cruiseBlock = wpEl("wpCruiseBlock");
   if (cruiseBlock) cruiseBlock.style.display = (isPatch && fw.cruise) ? "block" : "none";
+  const wheelBlock = wpEl("wpWheelBlock");
+  if (wheelBlock) wheelBlock.style.display = (isPatch && fw.wheelDiameter) ? "block" : "none";
   wpUpdateFinVisibility();
 }
 
@@ -183,12 +186,13 @@ function wpTimestamp() {
   return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
 }
 
-function wpBuildName(fw, speed, variant, blinkerFix, zerostart, cruise) {
+function wpBuildName(fw, speed, variant, blinkerFix, zerostart, cruise, wheelDiameter) {
   if (fw.kind === "ali") return fw.base;
   const parts = [fw.base];
   if (speed > 20) parts.push("Unlocked");
   if (zerostart) parts.push("ZeroStart");
   if (cruise) parts.push("Cruise");
+  if (wheelDiameter) parts.push("WheelDia");
   if (variant) parts.push(`BLE${variant}`);
   if (blinkerFix) parts.push("BlinkerFix");
   if (parts.length === 1) parts.push("UNPATCHED");
@@ -207,7 +211,7 @@ async function wpRun() {
     const pyodide = wpState.pyodide;
     const wp = pyodide.pyimport("teverun_patcher.webpatch");
 
-    let speed = 20, variant = "", serial = "", blinkerFix = false, zerostart = false, cruise = false;
+    let speed = 20, variant = "", serial = "", blinkerFix = false, zerostart = false, cruise = false, wheelDiameter = false;
     if (fw.kind === "d5") {
       speed = parseInt(wpEl("wpSpeed").value || "20", 10);
       if (fw.blinkerFix) {
@@ -221,6 +225,10 @@ async function wpRun() {
       if (fw.cruise) {
         const cb = wpEl("wpCruise");
         cruise = !!(cb && cb.checked);
+      }
+      if (fw.wheelDiameter) {
+        const cb = wpEl("wpWheel");
+        wheelDiameter = !!(cb && cb.checked);
       }
       if (fw.ble) {
         variant = wpEl("wpBle").value || "";
@@ -256,7 +264,7 @@ async function wpRun() {
         resProxy = wp.passthrough();
       } else {
         pyodide.FS.writeFile("/work/in.hex", fwBytes);
-        resProxy = wp.patch_d5(speed, variant || null, serial || null, blinkerFix, zerostart, cruise);
+        resProxy = wp.patch_d5(speed, variant || null, serial || null, blinkerFix, zerostart, cruise, wheelDiameter);
       }
     }
 
@@ -270,12 +278,13 @@ async function wpRun() {
     const blinkerApplied = (fw.kind === "d5") ? resProxy.get("blinker_fix") : false;
     const zerostartApplied = (fw.kind === "d5") ? resProxy.get("zerostart") : false;
     const cruiseApplied = (fw.kind === "d5") ? resProxy.get("cruise") : false;
+    const wheelApplied = (fw.kind === "d5") ? resProxy.get("wheel_diameter") : false;
     binProxy.destroy();
     resProxy.destroy();
 
     const base = (fw.kind === "auto")
       ? (autoName + "_Unlocked_AUTO_" + wpTimestamp())
-      : wpBuildName(fw, speed, variant, blinkerFix, zerostart, cruise);
+      : wpBuildName(fw, speed, variant, blinkerFix, zerostart, cruise, wheelDiameter);
     wpState.results = {
       hexText,
       binBytes,
@@ -294,6 +303,7 @@ async function wpRun() {
     if (fw.kind === "auto") summary += ` · ${applied} Clamps automatisch entfernt`;
     if (zerostartApplied) summary += ` · ZeroStart frei`;
     if (cruiseApplied) summary += ` · Cruise/Tempomat frei`;
+    if (wheelApplied) summary += ` · WheelDiameter speicherbar`;
     if (blinkerApplied) summary += ` · Blinker-Fix aktiv`;
     if (targetName) summary += ` · neuer BLE-Name <code>${targetName}</code>`;
     wpStatus(summary + ".", "ok");

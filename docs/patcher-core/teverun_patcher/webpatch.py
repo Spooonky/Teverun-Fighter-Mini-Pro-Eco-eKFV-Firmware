@@ -31,18 +31,19 @@ def _read_bytes(path: str) -> bytes:
 
 
 def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False,
-             zerostart=False, cruise=False) -> dict:
+             zerostart=False, cruise=False, wheel_diameter=False) -> dict:
     """Patcht die Firmware (zuvor von JS nach IN_HEX geschrieben).
 
     Das Profil wird per Fingerprint AUTOMATISCH erkannt (5.4.14, 5.4.19, ...).
     Der Versions-Marker im Prop-Record wird aus der Original-Firmware uebernommen.
 
-    speed:        int > 20 aktiviert die Speed/Zug-Freigabe (Clamp-Entfernung).
-    ble_variant:  None oder Laender-Kennung (nur fuer ble_capable-Profile).
-    ble_serial:   Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
-    blinker_fix:  True aktiviert den Blinker-Fix (nur R5.4.19).
-    zerostart:    True aktiviert ZeroStart-Freigabe (nur R5.4.19).
-    cruise:       True aktiviert Cruise/Tempomat (nur R5.4.19; zieht ZeroStart-Freigabe mit).
+    speed:          int > 20 aktiviert die Speed/Zug-Freigabe (Clamp-Entfernung).
+    ble_variant:    None oder Laender-Kennung (nur fuer ble_capable-Profile).
+    ble_serial:     Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
+    blinker_fix:    True aktiviert den Blinker-Fix (nur R5.4.19).
+    zerostart:      True aktiviert ZeroStart-Freigabe (nur R5.4.19).
+    cruise:         True aktiviert Cruise/Tempomat (nur R5.4.19; zieht ZeroStart-Freigabe mit).
+    wheel_diameter: True macht WheelDiameter im Display dauerhaft speicherbar (nur R5.4.19, Cave).
 
     R5.4.19: ZeroStart/Cruise/Speed teilen sich denselben Builder-Bytebereich -> die
     Kombination wird zentral in core.r5_4_19_features aufgeloest. Andere Profile (5.4.14)
@@ -56,8 +57,8 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False,
     speed = int(speed)
     is_r519 = profile.get("id") == "r5_4_19"
 
-    if (zerostart or cruise or blinker_fix) and not is_r519:
-        raise RuntimeError("ZeroStart / Cruise / Blinker-Fix sind nur fuer die R5.4.19-Firmware verfuegbar.")
+    if (zerostart or cruise or blinker_fix or wheel_diameter) and not is_r519:
+        raise RuntimeError("ZeroStart / Cruise / Blinker-Fix / WheelDiameter sind nur fuer die R5.4.19-Firmware verfuegbar.")
 
     if is_r519:
         from teverun_patcher.core import r5_4_19_features
@@ -84,6 +85,11 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False,
         info = ble_name_patch.apply(loader, ble_variant, ble_serial, cfg=profile.get("ble"))
         target_name = info["target_name"]
 
+    # WheelDiameter NACH BLE anwenden -> Cave landet hinter dem BLE-Cave (keine Ueberlappung)
+    if wheel_diameter:
+        from teverun_patcher.core import wheel_diameter as wd_mod
+        wd_mod.apply(loader)
+
     crc = patch_engine.save(loader, OUT_HEX)
     loader.save_bin(OUT_BIN)
 
@@ -98,6 +104,7 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False,
         "blinker_fix": bool(blinker_fix) and is_r519,
         "zerostart": bool(zerostart) and is_r519,
         "cruise": bool(cruise) and is_r519,
+        "wheel_diameter": bool(wheel_diameter) and is_r519,
     }
 
 
