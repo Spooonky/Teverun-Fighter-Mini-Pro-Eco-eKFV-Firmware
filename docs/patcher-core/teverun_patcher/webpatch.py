@@ -30,37 +30,52 @@ def _read_bytes(path: str) -> bytes:
         return f.read()
 
 
-def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, cruise_persist=False) -> dict:
+def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False,
+             zerostart=False, cruise=False) -> dict:
     """Patcht die Firmware (zuvor von JS nach IN_HEX geschrieben).
 
-    Das Profil wird per Fingerprint AUTOMATISCH erkannt (5.4.14, 5.4.19, ...),
-    sodass die richtigen Clamp-Offsets verwendet werden. Der Versions-Marker im
-    Prop-Record wird aus der Original-Firmware uebernommen.
+    Das Profil wird per Fingerprint AUTOMATISCH erkannt (5.4.14, 5.4.19, ...).
+    Der Versions-Marker im Prop-Record wird aus der Original-Firmware uebernommen.
 
-    speed:           int > 20 aktiviert die Speed/Zug-Freigabe (Clamp-Entfernung).
-    ble_variant:     None oder Laender-Kennung (nur fuer ble_capable-Profile / 5.4.14).
-    ble_serial:      Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
-    blinker_fix:     True aktiviert den Blinker-Fix (nur 5.4.19; sonst No-Op).
-    cruise_persist:  True rüstet die CruiseMode-Speicherung nach (nur 5.4.19).
+    speed:        int > 20 aktiviert die Speed/Zug-Freigabe (Clamp-Entfernung).
+    ble_variant:  None oder Laender-Kennung (nur fuer ble_capable-Profile).
+    ble_serial:   Original-FIN (fuer BLE-Namensumbau), nur bei ble_variant noetig.
+    blinker_fix:  True aktiviert den Blinker-Fix (nur R5.4.19).
+    zerostart:    True aktiviert ZeroStart-Freigabe (nur R5.4.19).
+    cruise:       True aktiviert Cruise/Tempomat (nur R5.4.19; zieht ZeroStart-Freigabe mit).
+
+    R5.4.19: ZeroStart/Cruise/Speed teilen sich denselben Builder-Bytebereich -> die
+    Kombination wird zentral in core.r5_4_19_features aufgeloest. Andere Profile (5.4.14)
+    nutzen weiterhin den klassischen Gruppen-Patch (nur Speed).
     """
-    from teverun_patcher.core import cruise_persist as cp_mod
     loader = HexLoader(IN_HEX)
     profile = identify(loader)
     if profile is None:
         raise RuntimeError("Firmware nicht erkannt — kein passendes Profil.")
 
-    has_blinker = any(p.get("group") == "blinker_fix" for p in profile.get("patches", []))
-    if blinker_fix and not has_blinker:
-        raise RuntimeError("Blinker-Fix ist nur fuer die R5.4.19-Firmware verfuegbar.")
-    if cruise_persist and not cp_mod.is_compatible(loader):
-        raise RuntimeError("CruiseMode-Speicherung ist nur fuer die R5.4.19-Firmware verfuegbar.")
+    speed = int(speed)
+    is_r519 = profile.get("id") == "r5_4_19"
 
-    params = {"speed": int(speed), "motor_cap": False, "kickstart": False,
-              "blinker_fix": bool(blinker_fix)}
-    report = patch_engine.apply(loader, profile, params)
-    if not report.ok:
-        errs = "; ".join(f"0x{a:08X}: {m}" for a, m in report.errors)
-        raise RuntimeError("Patch fehlgeschlagen: " + errs)
+    if (zerostart or cruise or blinker_fix) and not is_r519:
+        raise RuntimeError("ZeroStart / Cruise / Blinker-Fix sind nur fuer die R5.4.19-Firmware verfuegbar.")
+
+    if is_r519:
+        from teverun_patcher.core import r5_4_19_features
+        applied = r5_4_19_features.apply_features(
+            loader,
+            speed_remove=speed > 20,
+            zerostart=bool(zerostart),
+            cruise=bool(cruise),
+            blinker=bool(blinker_fix),
+        )
+        n_applied = len(applied)
+    else:
+        params = {"speed": speed, "motor_cap": False, "kickstart": False}
+        report = patch_engine.apply(loader, profile, params)
+        if not report.ok:
+            errs = "; ".join(f"0x{a:08X}: {m}" for a, m in report.errors)
+            raise RuntimeError("Patch fehlgeschlagen: " + errs)
+        n_applied = len(report.applied)
 
     target_name = None
     if ble_variant:
@@ -69,11 +84,6 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, cruise
         info = ble_name_patch.apply(loader, ble_variant, ble_serial, cfg=profile.get("ble"))
         target_name = info["target_name"]
 
-    cruise_done = False
-    if cruise_persist:
-        cp_mod.apply(loader)
-        cruise_done = True
-
     crc = patch_engine.save(loader, OUT_HEX)
     loader.save_bin(OUT_BIN)
 
@@ -81,12 +91,13 @@ def patch_d5(speed, ble_variant=None, ble_serial=None, blinker_fix=False, cruise
         "hex": _read_text(OUT_HEX),
         "bin": _read_bytes(OUT_BIN),
         "crc": crc,
-        "applied": len(report.applied),
-        "skipped": len(report.skipped),
+        "applied": n_applied,
+        "skipped": 0,
         "target_name": target_name,
-        "cruise_persist": cruise_done,
         "profile": profile.get("name", "?"),
-        "blinker_fix": bool(blinker_fix) and has_blinker,
+        "blinker_fix": bool(blinker_fix) and is_r519,
+        "zerostart": bool(zerostart) and is_r519,
+        "cruise": bool(cruise) and is_r519,
     }
 
 

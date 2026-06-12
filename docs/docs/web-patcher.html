@@ -42,9 +42,10 @@
       style="color:#60a5fa;text-decoration:none;font-weight:500;">Kompatibilitätsübersicht</a>.
   </div>
   <div class="important-note">
-    <strong>Zero-Start / Kick-Start:</strong> Diese Funktion lässt sich <strong>nicht per Firmware</strong>
-    freischalten. Sie ist im Motorcontroller verankert und beim Fighter chargenabhängig (erste Charge: nein, ab der
-    dritten Charge ab Werk). Weiterführende Informationen finden Sie in den
+    <strong>Zero-Start (Anfahren aus dem Stand):</strong> Für die <strong>R5.4.19</strong>-Firmware lässt sich
+    dies jetzt direkt über die Option unten freischalten und bleibt im Display ein-/ausschaltbar. Bei anderen
+    Modellen/Firmwares ist die Funktion teils im Motorcontroller verankert und ab Werk chargenabhängig.
+    Weiterführende Informationen finden Sie in den
     <a href="#" class="nav-item" data-source="docs/faq.html"
       style="color:#60a5fa;text-decoration:none;font-weight:500;">FAQ</a>.
   </div>
@@ -96,6 +97,31 @@
         </p>
       </div>
 
+      <div id="wpZerostartBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
+          <input type="checkbox" id="wpZerostart" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+          <span>ZeroStart freigeben (Anfahren aus dem Stand)</span>
+        </label>
+        <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+          Erlaubt das Anfahren ohne Antreten. Das Ein- und Ausschalten erfolgt wie gewohnt im
+          Display-Menü. Ohne „Geschwindigkeit freigeben" bleibt die Höchstgeschwindigkeit bei
+          ~22&nbsp;km/h (proportional über GearLimitSpeed im Display, 100&nbsp;%&nbsp;≈&nbsp;22). Nur für R5.4.19.
+        </p>
+      </div>
+
+      <div id="wpCruiseBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
+          <input type="checkbox" id="wpCruise" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+          <span>Cruise / Tempomat freigeben</span>
+        </label>
+        <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
+          Schaltet den Tempomat frei; das Ein- und Ausschalten erfolgt im Display-Menü. Cruise benötigt
+          technisch die ZeroStart-Freigabe und aktiviert sie automatisch mit — das ZeroStart-Verhalten
+          lässt sich aber weiterhin im Display abschalten. Ohne „Geschwindigkeit freigeben" bleibt die
+          Höchstgeschwindigkeit bei ~22&nbsp;km/h. Nur für R5.4.19.
+        </p>
+      </div>
+
       <div id="wpBlinkerBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
           <input type="checkbox" id="wpBlinkerFix" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
@@ -104,18 +130,6 @@
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
           Behebt den Fehler in 5.4.19, bei dem die Blinker dauerhaft leuchten statt zu blinken.
           Stellt das normale Blinken (wie in 5.4.14) wieder her. Nur für R5.4.19.
-        </p>
-      </div>
-
-      <div id="wpCruiseBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
-        <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
-          <input type="checkbox" id="wpCruise" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
-          <span>CruiseMode dauerhaft speichern</span>
-        </label>
-        <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
-          Behebt, dass sich CruiseMode (AutoCruise) in 5.4.19 zwar im Menü umstellen lässt, aber nach
-          dem Verlassen/Neustart zurückspringt. Mit dieser Option bleibt der gewählte Zustand erhalten
-          (wie auf R3/ALI), KickStart bleibt unberührt. Nur für R5.4.19. Getestet.
         </p>
       </div>
 
