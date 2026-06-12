@@ -74,10 +74,10 @@
       <label style="display:block;font-size:14px;color:#f8fafc;font-weight:600;margin-bottom:6px;">Firmware</label>
       <select id="wpFirmware" onchange="wpOnFirmwareChange()"
         style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
-        <option value="d5">Teverun D5.4.14 (Geschwindigkeit + Bluetooth-Name)</option>
-        <option value="r519">Teverun R5.4.19 (Geschwindigkeit, neueste Version)</option>
-        <option value="ali">ALI Original (nur aufspielen, ohne Änderung)</option>
-        <option value="auto">Eigene Firmware hochladen – Auto-Unlock (jede Version)</option>
+        <option value="r519" selected>Teverun R5.4.19</option>
+        <option value="d5">Teverun D5.4.14</option>
+        <option value="ali">ALI Original</option>
+        <option value="auto">Eigene Firmware hochladen, Auto-Unlock</option>
       </select>
     </div>
 
@@ -88,7 +88,7 @@
         </label>
         <select id="wpSpeed"
           style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
-          <option value="20">Unverändert (Werkseinstellung)</option>
+          <option value="20">eKFV-Limit (22 km/h)</option>
           <option value="25">Freigeben (Feineinstellung anschließend im Display)</option>
         </select>
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
@@ -99,7 +99,7 @@
 
       <div id="wpZerostartBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
-          <input type="checkbox" id="wpZerostart" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+          <input type="checkbox" id="wpZerostart" class="wp-check">
           <span>ZeroStart freigeben (Anfahren aus dem Stand)</span>
         </label>
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
@@ -111,12 +111,12 @@
 
       <div id="wpCruiseBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
-          <input type="checkbox" id="wpCruise" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+          <input type="checkbox" id="wpCruise" class="wp-check">
           <span>Cruise / Tempomat freigeben</span>
         </label>
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
           Schaltet den Tempomat frei; das Ein- und Ausschalten erfolgt im Display-Menü. Cruise benötigt
-          technisch die ZeroStart-Freigabe und aktiviert sie automatisch mit — das ZeroStart-Verhalten
+          technisch die ZeroStart-Freigabe und aktiviert sie automatisch mit. Das ZeroStart-Verhalten
           lässt sich aber weiterhin im Display abschalten. Ohne „Geschwindigkeit freigeben" bleibt die
           Höchstgeschwindigkeit bei ~22&nbsp;km/h. Nur für R5.4.19.
         </p>
@@ -124,7 +124,7 @@
 
       <div id="wpBlinkerBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
-          <input type="checkbox" id="wpBlinkerFix" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+          <input type="checkbox" id="wpBlinkerFix" class="wp-check">
           <span>Blinker-Fix aktivieren</span>
         </label>
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
@@ -176,7 +176,7 @@
       <input type="file" id="wpUpload" accept=".hex"
         style="width:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 14px;color:#f8fafc;font-size:14px;outline:none;">
       <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
-        Auto-Unlock erkennt die Geschwindigkeits-Begrenzung automatisch und entfernt sie – auch bei neuen oder
+        Auto-Unlock erkennt die Geschwindigkeits-Begrenzung automatisch und entfernt sie, auch bei neuen oder
         unbekannten Versionen. Wird kein eindeutiges Muster gefunden, wird <strong>nichts</strong> verändert
         (Sicherheits-Abbruch). Die Datei bleibt lokal im Browser.
       </p>

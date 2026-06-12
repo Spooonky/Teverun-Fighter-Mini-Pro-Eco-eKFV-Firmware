@@ -509,3 +509,39 @@ kbd {
 .guide-category h3 + .important-note,
 .guide-category h3 + .code-container,
 .guide-category h3 + ul { margin-top: 24px; }
+
+/* Web-Patcher: moderne Checkbox (Tailwind-Stil) */
+.wp-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0 0;
+  flex-shrink: 0;
+  border: 1.5px solid #475569;
+  border-radius: 6px;
+  background-color: #0f172a;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.wp-check::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  transform: scale(0);
+  transition: transform .12s ease-in-out;
+  background-color: #fff;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.wp-check:hover { border-color: #64748b; }
+.wp-check:checked {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+.wp-check:checked::before { transform: scale(1); }
+.wp-check:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, .4);
+}

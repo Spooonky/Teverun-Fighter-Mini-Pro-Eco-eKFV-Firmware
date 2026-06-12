@@ -127,6 +127,7 @@ async function wpInit() {
     wpStatus("Bereit. Firmware auswählen, Optionen konfigurieren und Datei erstellen.", "ok");
     const panel = wpEl("wpPanel");
     if (panel) panel.style.display = "block";
+    wpOnFirmwareChange();   // Optionen fuer die vorausgewaehlte Firmware (R5.4.19) rendern
   } catch (e) {
     wpStatus("Fehler beim Start: " + e.message, "err");
     if (btn) btn.disabled = false;
@@ -138,7 +139,7 @@ async function wpInit() {
 function wpOnFirmwareChange() {
   const fw = WP_FIRMWARES[wpEl("wpFirmware").value];
   const isPatch = fw.kind === "d5";
-  wpEl("wpD5Options").style.display = isPatch ? "block" : "none";
+  wpEl("wpD5Options").style.display = isPatch ? "flex" : "none";
   wpEl("wpAliNote").style.display = (fw.kind === "ali") ? "block" : "none";
   const up = wpEl("wpUploadBlock");
   if (up) up.style.display = (fw.kind === "auto") ? "block" : "none";
