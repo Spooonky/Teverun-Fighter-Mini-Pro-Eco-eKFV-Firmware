@@ -157,8 +157,11 @@ function wpOnFirmwareChange() {
 // FIN-Eingabe nur zeigen, wenn eine Länderkennung gewählt ist (Name wird geändert).
 function wpUpdateFinVisibility() {
   const sel = wpEl("wpBle");
+  const show = !!(sel && sel.value);
   const finBlock = wpEl("wpFinBlock");
-  if (finBlock) finBlock.style.display = (sel && sel.value) ? "block" : "none";
+  if (finBlock) finBlock.style.display = show ? "block" : "none";
+  const bleNote = wpEl("wpBleNote");
+  if (bleNote) bleNote.style.display = show ? "block" : "none";
 }
 
 function wpPreviewBle() {

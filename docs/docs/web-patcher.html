@@ -77,7 +77,6 @@
         <option value="r519" selected>Teverun R5.4.19</option>
         <option value="d5">Teverun D5.4.14</option>
         <option value="ali">ALI Original</option>
-        <option value="auto">Eigene Firmware hochladen, Auto-Unlock</option>
       </select>
     </div>
 
@@ -124,12 +123,15 @@
 
       <div id="wpBlinkerBlock" style="display:none;margin-top:14px;padding-top:20px;border-top:1px solid #1e293b;">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#f8fafc;font-weight:600;cursor:pointer;">
-          <input type="checkbox" id="wpBlinkerFix" class="wp-check">
+          <input type="checkbox" id="wpBlinkerFix" class="wp-check" checked>
           <span>Blinker-Fix aktivieren</span>
         </label>
         <p style="font-size:13px;color:#94a3b8;margin-top:6px;line-height:1.5;">
           Behebt den Fehler in 5.4.19, bei dem die Blinker dauerhaft leuchten statt zu blinken.
           Stellt das normale Blinken (wie in 5.4.14) wieder her. Nur für R5.4.19.
+        </p>
+        <p style="font-size:13px;color:#fbbf24;margin-top:8px;line-height:1.5;font-weight:600;">
+          Hinweis: Nicht notwendig, wenn Ihr Roller ein separates Blinker-Modul verbaut hat.
         </p>
       </div>
 
@@ -147,6 +149,13 @@
           <option value="T1IL">T1IL (Israel)</option>
           <option value="TAT">TAT (Österreich und Alpenraum)</option>
         </select>
+      </div>
+
+      <div id="wpBleNote" class="important-note" style="display:none;">
+        <strong>Bluetooth-Name ändern:</strong> Bitte folgen Sie unbedingt der Anleitung, damit der neue
+        Name korrekt übernommen wird.
+        <a href="#" class="nav-item" data-source="docs/ivcu-ble-rename.html"
+          style="color:#60a5fa;text-decoration:none;font-weight:500;">Anleitung: Bluetooth-Name ändern</a>.
       </div>
 
       <div id="wpFinBlock" style="display:none;">
